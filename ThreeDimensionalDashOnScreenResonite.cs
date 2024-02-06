@@ -13,10 +13,10 @@ namespace ThreeDimensionalDashOnScreen
 {
     public class ThreeDimensionalDashOnScreen : ResoniteMod
 	{
-		public override string Name => "Resonite3DDashOnScreen";
+		public override string Name => "3DDashOnScreenResonite";
 		public override string Author => "rampa3";
 		public override string Version => "3.6.0";
-		public override string Link => "https://github.com/rampa3/Resonite3DDashOnScreen";
+		public override string Link => "https://github.com/rampa3/3DDashOnScreenResonite";
 		private static ModConfiguration Config;
 
 
