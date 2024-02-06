@@ -1,0 +1,64 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <OutputType>Library</OutputType>
+    <RootNamespace>ThreeDimensionalDashOnScreen</RootNamespace>
+    <AssemblyName>3DDashOnScreenResonite</AssemblyName>
+    <AssemblyTitle>3D Dash on Screen for Resonite</AssemblyTitle>
+    <Product>3D Dash on Screen for Resonite</Product>
+    <Company>rampa3</Company>
+    <Copyright>Copyright © 2024 rampa3</Copyright>
+    <Description>Resonite Mod Loader mod, that replaces 2D overlay dash in Screen mode with the regular VR one</Description>
+    <AssemblyVersion>3.6.0.0</AssemblyVersion>
+    <FileVersion>3.6.0.0</FileVersion>
+    <TargetFrameworkVersion>net472</TargetFrameworkVersion>
+    <LangVersion>11</LangVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <ProjectGuid>{F37E7925-F4EF-4FD2-BB0E-BF8D35E810E2}</ProjectGuid>
+
+    <TargetFramework>net472</TargetFramework>
+    <BaseOutputPath>.\bin</BaseOutputPath>
+    <BuildProjectReferences>false</BuildProjectReferences>
+    <CopyLocal>false</CopyLocal>
+    <CopyToMods Condition="'$(CopyToMods)'==''">false</CopyToMods>
+    <GamePath>$(MSBuildThisFileDirectory)Resonite</GamePath>
+    <GamePath Condition="Exists('C:\Program Files (x86)\Steam\steamapps\common\Resonite\')">C:\Program Files (x86)\Steam\steamapps\common\Resonite\</GamePath>
+    <GamePath Condition="Exists('E:\Programs\Steam\steamapps\common\Resonite\')">E:\Programs\Steam\steamapps\common\Resonite\</GamePath>
+    <GamePath Condition="Exists('D:\Programs\x64\Resonite\app\')">D:\Programs\x64\Resonite\app\</GamePath>
+    <GamePath Condition="Exists('$(HOME)/.steam/steam/steamapps/common/Resonite/')">$(HOME)/.steam/steam/steamapps/common/Resonite/</GamePath>
+    <GameRefsPath>$(GamePath)Resonite_Data\Managed\</GameRefsPath>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <DebugSymbols Condition="'$(Configuration)'=='Release'">false</DebugSymbols>
+    <DebugType Condition="'$(Configuration)'=='Release'">None</DebugType>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="0Harmony">
+      <HintPath>$(GamePath)rml_libs\0Harmony.dll</HintPath>
+      <HintPath Condition="Exists('$(GamePath)0Harmony.dll')">$(GamePath)0Harmony.dll</HintPath>
+    </Reference>
+    <Reference Include="Elements.Core">
+      <HintPath>$(GamePath)Resonite_Data\Managed\Elements.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="FrooxEngine">
+      <HintPath>$(GamePath)Resonite_Data\Managed\FrooxEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="ResoniteModLoader">
+      <HintPath>$(GamePath)Libraries\ResoniteModLoader.dll</HintPath>
+      <HintPath Condition="Exists('$(GamePath)ResoniteModLoader.dll')">$(GamePath)ResoniteModLoader.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <!-- make all references non-private, so they won't be copied to the output folder -->
+  <Target Name="ClearReferenceCopyLocalPaths" AfterTargets="ResolveAssemblyReferences">
+    <ItemGroup>
+      <ReferenceCopyLocalPaths Remove="@(ReferenceCopyLocalPaths)" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(CopyToMods)'=='true'">
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(GamePath)rml_mods" />
+    <Message Text="Copied $(TargetFileName) to $(GamePath)rml_mods" Importance="high" />
+  </Target>
+</Project>
