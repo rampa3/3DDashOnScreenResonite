@@ -11,7 +11,7 @@ using FrooxEngine.UIX;
 
 namespace ThreeDimensionalDashOnScreen
 {
-    public class ThreeDimensionalDashOnScreen : ResoniteMod
+	public class ThreeDimensionalDashOnScreen : ResoniteMod
 	{
 		public override string Name => "3DDashOnScreenResonite";
 		public override string Author => "rampa3";
@@ -26,7 +26,7 @@ namespace ThreeDimensionalDashOnScreen
 			Config.Save(true);
 			Harmony harmony = new Harmony("net.rampa3.3DDashOnScreenResonite");
 			if (Config.GetValue(MOD_ENABLED))
-            {
+			{
 				patchDash(harmony);
 				patchSlotPositioning(harmony);
 				addUIEditKey(harmony);
@@ -34,8 +34,8 @@ namespace ThreeDimensionalDashOnScreen
 				patchCameraUI(harmony);
 				disableForceItemKeepGrabbed(harmony);
 				fixResoniteNotifications(harmony);
-                Debug("All patches applied successfully!");
-            } else {
+				Debug("All patches applied successfully!");
+			} else {
 				Debug("3DDashOnScreen disabled!");
 			}
 			
@@ -54,54 +54,55 @@ namespace ThreeDimensionalDashOnScreen
 		private static ModConfigurationKey<Key> UI_EDIT_MODE_KEY = new ModConfigurationKey<Key>("UIEditModeKey", "UI edit mode key", () => Key.F4);
 
 		private static void disableForceItemKeepGrabbed(Harmony harmony)
-        {
+		{
 			MethodInfo original = AccessTools.DeclaredMethod(typeof(InteractionHandler), "OnInputUpdate", new Type[] { });
 			MethodInfo transpiler = AccessTools.DeclaredMethod(typeof(ThreeDimensionalDashOnScreen), nameof(disableForceItemKeepGrabbedTranspiler));
 			harmony.Patch(original, transpiler: new HarmonyMethod(transpiler));
 			Debug("Forcing keep last item held when dash is open patched out!");
-        }
-        
-        private static void fixResoniteNotifications(Harmony harmony)
+		}
+		
+		private static void fixResoniteNotifications(Harmony harmony)
 		{
 			MethodInfo original = AccessTools.DeclaredMethod(typeof(NotificationPanel), "OnCommonUpdate");
-            MethodInfo postfix = AccessTools.DeclaredMethod(typeof(ThreeDimensionalDashOnScreen), nameof(notificationPanelPostfix));
-            harmony.Patch(original, postfix: new HarmonyMethod(postfix));
+			MethodInfo postfix = AccessTools.DeclaredMethod(typeof(ThreeDimensionalDashOnScreen), nameof(notificationPanelPostfix));
+			harmony.Patch(original, postfix: new HarmonyMethod(postfix));
 			Debug("Notifications fix applied!");
 		}
 
-        private static void notificationPanelPostfix(NotificationPanel __instance, SyncRef<Canvas> ____canvas)
-        {
-            ____canvas.Target.Size.Value = NotificationPanel.CANVAS_SIZE;
-            Slot slot = __instance.Slot;
-            float3 v = float3.One;
-            slot.LocalScale = v * NotificationPanel.VR_SCALE;
-            __instance.Slot.LocalPosition = float3.Zero;
-        }
-        private static IEnumerable<CodeInstruction> disableForceItemKeepGrabbedTranspiler(IEnumerable<CodeInstruction> instructions)
-        {
+		private static void notificationPanelPostfix(NotificationPanel __instance, SyncRef<Canvas> ____canvas)
+		{
+			____canvas.Target.Size.Value = NotificationPanel.CANVAS_SIZE;
+			Slot slot = __instance.Slot;
+			float3 v = float3.One;
+			slot.LocalScale = v * NotificationPanel.VR_SCALE;
+			__instance.Slot.LocalPosition = float3.Zero;
+		}
+		
+		private static IEnumerable<CodeInstruction> disableForceItemKeepGrabbedTranspiler(IEnumerable<CodeInstruction> instructions)
+		{
 			var codes = new List<CodeInstruction>(instructions);
 			for (var i = 0; i < codes.Count; i++)
-            {
+			{
 				if (codes[i].opcode == OpCodes.Ldarg_0 && codes[i + 1].opcode == OpCodes.Ldfld && codes[i + 2].opcode == OpCodes.Stloc_0 && codes[i + 3].opcode == OpCodes.Ldarg_0 && codes[i + 4].opcode == OpCodes.Call && codes[i + 5].opcode == OpCodes.Callvirt && ((MethodInfo)codes[i + 5].operand == typeof(InputInterface).GetMethod("get_VR_Active")))
-                {
+				{
 					codes[i + 3].opcode = OpCodes.Nop;
 					codes[i + 4].opcode = OpCodes.Nop;
 					codes[i + 5].opcode = OpCodes.Ldc_I4_1;
 				}
-            }
+			}
 			return codes.AsEnumerable();
 		}
 
 		private static void addDesktopControlPanelKeybind(Harmony harmony)
-        {
+		{
 			MethodInfo originalDesktopControllerOnCommonUpdate = AccessTools.DeclaredMethod(typeof(DesktopController), "OnCommonUpdate", new Type[] { });
 			MethodInfo postfixDesktopControllerOnCommonUpdate = AccessTools.DeclaredMethod(typeof(ThreeDimensionalDashOnScreen), nameof(DesktopControlsKeybindPostfix));
-            harmony.Patch(originalDesktopControllerOnCommonUpdate, postfix: new HarmonyMethod(postfixDesktopControllerOnCommonUpdate));
+			harmony.Patch(originalDesktopControllerOnCommonUpdate, postfix: new HarmonyMethod(postfixDesktopControllerOnCommonUpdate));
 			Debug("Desktop tab control panel key added!");
-        }
+		}
 
 		private static void DesktopControlsKeybindPostfix(DesktopController __instance)
-        {
+		{
 			MethodInfo toggleControls = __instance.GetType().GetMethod("ToggleControls", BindingFlags.NonPublic | BindingFlags.Instance);
 			if (__instance.InputInterface.GetKeyDown(Config.GetValue(DESKTOP_CONTROL_PANEL_KEY)) && __instance.InputInterface.ScreenActive)
 			{
@@ -110,7 +111,7 @@ namespace ThreeDimensionalDashOnScreen
 		}
 
 		private static void patchCameraUI(Harmony harmony)
-        {
+		{
 			MethodInfo original = AccessTools.DeclaredMethod(typeof(InteractiveCameraControl), "OnAttach", new Type[] { });
 			MethodInfo transpiler = AccessTools.DeclaredMethod(typeof(ThreeDimensionalDashOnScreen), nameof(CameraUITranspiler));
 			MethodInfo postfix = AccessTools.DeclaredMethod(typeof(ThreeDimensionalDashOnScreen), nameof(removeCamUISlider));
@@ -150,12 +151,12 @@ namespace ThreeDimensionalDashOnScreen
 		}
 
 		private static void addUIEditKey(Harmony harmony)
-        {
+		{
 			MethodInfo original = AccessTools.DeclaredMethod(typeof(Userspace), "OnCommonUpdate", new Type[] { });
 			MethodInfo postfix = AccessTools.DeclaredMethod(typeof(ThreeDimensionalDashOnScreen), nameof(KeybindPostfix));
 			harmony.Patch(original, postfix: new HarmonyMethod(postfix));
 			Debug("UI Edit Mode keybind added!");
-        }
+		}
 		private static void KeybindPostfix(Userspace __instance)
 		{
 			if (!__instance.InputInterface.GetKey(Key.Control) && (!__instance.InputInterface.GetKey(Key.Alt) || !__instance.InputInterface.GetKey(Key.AltGr)))
@@ -168,7 +169,7 @@ namespace ThreeDimensionalDashOnScreen
 		}
 
 		private static void patchSlotPositioning(Harmony harmony)
-        {
+		{
 			MethodInfo original = AccessTools.Method(typeof(SlotPositioning), nameof(SlotPositioning.PositionInFrontOfUser));
 			MethodInfo transpiler = AccessTools.DeclaredMethod(typeof(ThreeDimensionalDashOnScreen), nameof(positioningTranspiler));
 			harmony.Patch(original, transpiler: new HarmonyMethod(transpiler));
@@ -176,10 +177,10 @@ namespace ThreeDimensionalDashOnScreen
 		}
 
 		private static IEnumerable<CodeInstruction> positioningTranspiler(IEnumerable<CodeInstruction> instructions)
-        {
-            var codes = new List<CodeInstruction>(instructions);
+		{
+			var codes = new List<CodeInstruction>(instructions);
 
-            if (codes[0].opcode == OpCodes.Ldarg_0 && codes[1].opcode == OpCodes.Callvirt && codes[2].opcode == OpCodes.Call && (codes[3].opcode == OpCodes.Bne_Un_S || codes[3].opcode == OpCodes.Bne_Un))
+			if (codes[0].opcode == OpCodes.Ldarg_0 && codes[1].opcode == OpCodes.Callvirt && codes[2].opcode == OpCodes.Call && (codes[3].opcode == OpCodes.Bne_Un_S || codes[3].opcode == OpCodes.Bne_Un || codes[3].opcode == OpCodes.Brfalse_S || codes[3].opcode == OpCodes.Brfalse))
 			{
 				codes[0].opcode = OpCodes.Nop;
 				codes[1].opcode = OpCodes.Nop; //replace if with unconditional jump
@@ -195,7 +196,7 @@ namespace ThreeDimensionalDashOnScreen
 		}
 
 		private static void patchDash(Harmony harmony)
-        {
+		{
 			MethodInfo originalOnCommonUpdate = AccessTools.DeclaredMethod(typeof(UserspaceRadiantDash), "OnCommonUpdate", new Type[] { });
 			MethodInfo originalUpdateOverlayState = AccessTools.DeclaredMethod(typeof(UserspaceRadiantDash), "UpdateOverlayState", new Type[] { });
 			MethodInfo radiantDashCommonUpdateTranspiler = AccessTools.DeclaredMethod(typeof(ThreeDimensionalDashOnScreen), nameof(RadiantDashCommonUpdateTranspiler));
@@ -238,9 +239,9 @@ namespace ThreeDimensionalDashOnScreen
 			RadiantDash dash = __instance.Dash;
 			dash.VisualsRoot.SetParent(dash.Slot, false);
 			dash.VisualsRoot.SetIdentityTransform();
-            ____notificationsHolder.Target.SetParent(____notificationsRoot.Target, keepGlobalTransform: false);
-            ____notificationsHolder.Target.SetIdentityTransform();
-            return false;
+			____notificationsHolder.Target.SetParent(____notificationsRoot.Target, keepGlobalTransform: false);
+			____notificationsHolder.Target.SetIdentityTransform();
+			return false;
 		}
 
 		private static void ScreenProjectionPatch(UserspaceRadiantDash __instance)
