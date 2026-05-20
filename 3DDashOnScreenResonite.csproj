@@ -10,13 +10,13 @@
     <Copyright>Copyright © 2025 rampa3</Copyright>
     <Description>Resonite Mod Loader mod, that replaces 2D overlay dash in Screen mode with the regular VR one</Description>
     <Version>3.6.2.0</Version>
-    <TargetFrameworkVersion>net9.0</TargetFrameworkVersion>
-    <LangVersion>11</LangVersion>
+    <TargetFrameworkVersion>net10.0</TargetFrameworkVersion>
+    <LangVersion>latest</LangVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
     <ProjectGuid>{F37E7925-F4EF-4FD2-BB0E-BF8D35E810E2}</ProjectGuid>
 
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <BaseOutputPath>.\bin</BaseOutputPath>
     <BuildProjectReferences>false</BuildProjectReferences>
     <CopyLocal>false</CopyLocal>
