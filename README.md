@@ -13,3 +13,4 @@ Additionally, VR behaviour of camera controls UI and notifications are restored 
 - [rampa3](https://github.com/rampa3) - original idea and research
 - [eia485](https://github.com/eia485) - added cursor parking lot and helped fix errors
 - [art0007i](https://github.com/art0007i) - wrote a couple of transpilers
+- [NepuShiro](https://github.com/NepuShiro) - helped fixing errors
